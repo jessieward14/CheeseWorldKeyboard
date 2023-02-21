@@ -7,6 +7,8 @@
 
 //Graphics Libraries
 
+import sun.jvm.hotspot.memory.Space;
+
 import java.awt.Graphics2D;
 import java.awt.image.BufferStrategy;
 import java.awt.*;
@@ -41,8 +43,11 @@ public class CheeseWorld implements Runnable, KeyListener {
 
     //Declare the character objects
     public Mouse mouse1;
-    public Cheese theCheese;
-    public Player user;
+    public Backround1 theCheese;
+    public Backround2 theCheese2;
+
+    public Bird user;
+    public Pillar [] obstacles;
 
     // Main method definition
     // This is the code that runs first and automatically
@@ -63,14 +68,25 @@ public class CheeseWorld implements Runnable, KeyListener {
         canvas.addKeyListener(this);
 
         //load images
-        cheesePic = Toolkit.getDefaultToolkit().getImage("cheese.gif");
+        cheesePic = Toolkit.getDefaultToolkit().getImage("download.jpg");
         mousePic = Toolkit.getDefaultToolkit().getImage("jerry.gif");
-        tomPic = Toolkit.getDefaultToolkit().getImage("tomCat.png");
+        tomPic = Toolkit.getDefaultToolkit().getImage("FlappyBird.png");
 
         //create (construct) the objects needed for the game
         mouse1 = new Mouse(200, 300, 4, 4, mousePic);
-        theCheese = new Cheese(400, 300, 3, -4, cheesePic);
-        user = new Player(250, 250, 0, 0, tomPic);
+        theCheese = new Backround1(1, 0, 3, 0, cheesePic);
+        theCheese2 = new Backround2(1000, 0, 3, 0, cheesePic);
+        user = new Bird(250, 250, 0, 0, tomPic);
+
+        //obstacles= new Pillar [8];
+       // for(int i = 0; i< obstacles.length; i++) {
+            //obstacles [i] = new Pillar((int)(Math.random()*8)+0,(int)(Math.random()*8)+0, (int)(Math.random()*8)+0, (int)(Math.random()*8)+0 );
+            //if(obstacles[i].height>100){
+               // obstacles[i].pic =
+                // use a tall pillar pic
+           // }
+            //obstacles[i].pic =
+        //}
 
     } // CheeseWorld()
 
@@ -83,6 +99,7 @@ public class CheeseWorld implements Runnable, KeyListener {
     public void moveThings() {
         mouse1.move();
         theCheese.move();
+        theCheese2.move();
         user.move();
     }
 
@@ -95,7 +112,7 @@ public class CheeseWorld implements Runnable, KeyListener {
             moveThings();           //move all the game objects
             checkIntersections();   // check character crashes
             render();               // paint the graphics
-            pause(20);         // sleep for 20 ms
+            pause(10);         // sleep for 20 ms
         }
     }
 
@@ -107,6 +124,8 @@ public class CheeseWorld implements Runnable, KeyListener {
         //draw characters to the screen
         g.drawImage(mouse1.pic, mouse1.xpos, mouse1.ypos, mouse1.width, mouse1.height, null);
         g.drawImage(theCheese.pic, theCheese.xpos, theCheese.ypos, theCheese.width, theCheese.height, null);
+        g.drawImage(theCheese.pic, theCheese2.xpos, theCheese.ypos, theCheese.width, theCheese.height, null);
+
         g.drawImage(user.pic, user.xpos, user.ypos, user.width, user.height, null);
 
         g.dispose();

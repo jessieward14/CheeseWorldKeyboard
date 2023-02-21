@@ -1,7 +1,7 @@
 
 import java.awt.*;
 
-public class Player {
+public class Bird {
 
 
     public int xpos;                //the x position
@@ -21,7 +21,7 @@ public class Player {
     public boolean up;
 
 
-    public Player(int pXpos, int pYpos, int dxParameter, int dyParameter, Image picParameter) {
+    public Bird(int pXpos, int pYpos, int dxParameter, int dyParameter, Image picParameter) {
 
         xpos = pXpos;
         ypos = pYpos;
@@ -99,5 +99,7 @@ public class Player {
             ypos = 0;
         }
     }
+
+
 
 }
