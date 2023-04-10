@@ -41,6 +41,7 @@ public class CheeseWorld implements Runnable, KeyListener {
     public Image mousePic;
     public Image tomPic;
 
+
     //Declare the character objects
     public Mouse mouse1;
     public Backround1 theCheese;
@@ -48,6 +49,17 @@ public class CheeseWorld implements Runnable, KeyListener {
 
     public Bird user;
     public Pillar [] obstacles;
+    public Pillar[] obstacles2;
+
+    public int[] obstacles2Heights;
+
+    public boolean gameOver;
+    public boolean gameStart=false;
+    public Image gameOverpic;
+    public Backround1 gameOverScreen;
+
+
+
 
     // Main method definition
     // This is the code that runs first and automatically
@@ -72,25 +84,76 @@ public class CheeseWorld implements Runnable, KeyListener {
         mousePic = Toolkit.getDefaultToolkit().getImage("jerry.gif");
         tomPic = Toolkit.getDefaultToolkit().getImage("FlappyBird.png");
 
+
+
         //create (construct) the objects needed for the game
         mouse1 = new Mouse(200, 300, 4, 4, mousePic);
         theCheese = new Backround1(1, 0, 3, 0, cheesePic);
         theCheese2 = new Backround2(1000, 0, 3, 0, cheesePic);
         user = new Bird(250, 250, 0, 0, tomPic);
+        gameOverpic = Toolkit.getDefaultToolkit().getImage("gameover.png");
+        gameOverScreen = new Backround1(500,500,0,0,gameOverpic);
 
-        //obstacles= new Pillar [8];
-       // for(int i = 0; i< obstacles.length; i++) {
-            //obstacles [i] = new Pillar((int)(Math.random()*8)+0,(int)(Math.random()*8)+0, (int)(Math.random()*8)+0, (int)(Math.random()*8)+0 );
-            //if(obstacles[i].height>100){
-               // obstacles[i].pic =
-                // use a tall pillar pic
-           // }
-            //obstacles[i].pic =
-        //}
+        obstacles2Heights=new int[100];
 
-    } // CheeseWorld()
+        obstacles= new Pillar [100];//top obstacles
+        for(int i = 0; i< obstacles.length; i=i+1) {
+            obstacles[i] = new Pillar((i*300)+600,  0,  3, 0);
+            obstacles[i].height = (int)(Math.random()*270)+30;
+            obstacles2Heights[i]= (obstacles[i].height + 170);
+            obstacles[i].pic=Toolkit.getDefaultToolkit().getImage("top.png");
+
+            //use a tall pillar pic
+            }
+
+        obstacles2=new Pillar[100];//bottom obstacles
+        for(int i = 0; i< obstacles2.length; i=i+1) {
+            obstacles2[i] = new Pillar((i*300)+600,  obstacles2Heights[i],  3, 0);
+            obstacles2[i].pic = Toolkit.getDefaultToolkit().getImage("bottom.jpg");
+
+            obstacles2[i].height=500;
+            System.out.println("obstacles2Heights "+ obstacles2Heights);
+            System.out.println(" obstacles2[i].height "+  obstacles2[i].height);
+        }
+            // CheeseWorld()
+
+        }
+
+        public void randomPillar() {
+            for (int i = 0; i < obstacles.length; i = i + 1) {
+
+                obstacles[i].dx = 4;
+
+                if (obstacles[i].xpos< -10){
+                    obstacles[i].xpos=1000;
+                }
 
 
+            }
+//                if (obstacles[i].isAlive == false) {
+//                    double r = Math.random();
+//                    if (r < 0.05) {
+//                        obstacles[i].isAlive = true;
+//                        obstacles[i+1].isAlive = true;
+//
+//
+//
+//                    }
+//                }
+//                if (obstacles[i].isAlive == true) {
+//                    obstacles[i].dx = 3;
+//                    obstacles[i+1].dx = 3;
+//
+//                    if (obstacles[i].xpos < -10) {
+//                        obstacles[i].isAlive = false;
+//                        obstacles[i+1].isAlive = false;
+//
+//                    }
+//                }
+//
+//
+//            }
+        }
 //*******************************************************************************
 //User Method Section
 
@@ -101,6 +164,12 @@ public class CheeseWorld implements Runnable, KeyListener {
         theCheese.move();
         theCheese2.move();
         user.move();
+for (int i=0; i<obstacles.length; i=i+1){
+obstacles[i].move();
+}
+        for (int i=0; i<obstacles2.length; i=i+1){
+            obstacles2[i].move();
+        }
     }
 
     public void checkIntersections() {
@@ -109,11 +178,37 @@ public class CheeseWorld implements Runnable, KeyListener {
 
     public void run() {
         while (true) {
-            moveThings();           //move all the game objects
+            if(gameStart==true) {
+                moveThings();
+            }//move all the game objects
             checkIntersections();   // check character crashes
             render();               // paint the graphics
-            pause(10);         // sleep for 20 ms
+            pause(10);
+            collisions();
+            // sleep for 20 ms
+           // randomPillar();
+
         }
+    }
+
+
+    public void collisions(){
+        for(int i=0;i< obstacles.length;i++){
+            if(user.rec.intersects(obstacles[i].rec)){
+                System.out.println("he's dead");
+                gameStart=false;
+                gameOver=true;
+                
+            }
+            if (user.rec.intersects(obstacles2[i].rec)){
+                gameOver=true;
+                gameStart=false;
+                System.out.println("he's dead pt 2");
+
+
+            }
+        }
+
     }
 
     //paints things on the screen using bufferStrategy
@@ -128,8 +223,21 @@ public class CheeseWorld implements Runnable, KeyListener {
 
         g.drawImage(user.pic, user.xpos, user.ypos, user.width, user.height, null);
 
-        g.dispose();
+        for(int i = 0; i< obstacles.length; i=i+1){
+            g.drawImage(obstacles[i].pic, obstacles[i].xpos,obstacles[i].ypos, obstacles[i].width, obstacles[i].height, null);
+        }
+        for(int i = 0; i< obstacles2.length; i=i+1){
+            g.drawImage(obstacles2[i].pic, obstacles2[i].xpos,obstacles2[i].ypos, obstacles2[i].width, obstacles2[i].height, null);
+        }
+        if (gameOver==true){
+            g.drawImage(gameOverpic,300,200,400, 200, null);
+
+        }
+
+
+            g.dispose();
         bufferStrategy.show();
+
     }
 
     /***
@@ -143,37 +251,51 @@ public class CheeseWorld implements Runnable, KeyListener {
         int keyCode = event.getKeyCode();  //gets the keyCode (an integer) of the key pressed
         System.out.println("Key Pressed: " + key + "  Code: " + keyCode);
 
-        if (keyCode == 68) { // d
-            user.right = true;
+        if (keyCode == 32) { // spacebar
+           user.jumping = true;
+           user.dy=-60;
+           gameStart=true;
+           // paint the graphics
+
         }
-        if (keyCode == 65) { // a
-            user.left = true;
+        if(gameOver==true&&keyCode == 32){
+            gameOver = false;
+            gameStart= true;
+
         }
 
-        if (keyCode == 83) { // s
-            user.down = true;
-        }
-        if (keyCode == 87) { // w
-            user.up = true;
-        }
+
+//        if (keyCode == 68) { // d
+//            user.right = true;
+//        }
+//        if (keyCode == 65) { // a
+//            user.left = true;
+//        }
+//
+//        if (keyCode == 83) { // s
+//            user.down = true;
+//        }
+//        if (keyCode == 87) { // w
+//            user.up = true;
+//        }
     }//keyPressed()
 
     public void keyReleased(KeyEvent event) {
         char key = event.getKeyChar();
         int keyCode = event.getKeyCode();
         //This method will do something when a key is released
-        if (keyCode == 68) { // d
-            user.right = false;
-        }
-        if (keyCode == 65) { // a
-            user.left = false;
-        }
-        if (keyCode == 83) { // s
-            user.down = false;
-        }
-        if (keyCode == 87) { // w
-            user.up = false;
-        }
+//        if (keyCode == 68) { // d
+//            user.right = false;
+//        }
+//        if (keyCode == 65) { // a
+//            user.left = false;
+//        }
+//        if (keyCode == 83) { // s
+//            user.down = false;
+//        }
+//        if (keyCode == 87) { // w
+//            user.up = false;
+//        }
 
     }//keyReleased()
 
@@ -204,6 +326,7 @@ public class CheeseWorld implements Runnable, KeyListener {
         frame.pack();  //adjusts the frame and its contents so the sizes are at their default or larger
         frame.setResizable(false);   //makes it so the frame cannot be resized
         frame.setVisible(true);      //IMPORTANT!!!  if the frame is not set to visible it will not appear on the screen!
+
 
         // sets up things so the screen displays images nicely.
         canvas.createBufferStrategy(2);

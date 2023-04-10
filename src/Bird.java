@@ -19,14 +19,15 @@ public class Bird {
     public boolean left;
     public boolean down;
     public boolean up;
+    public boolean jumping;
 
 
     public Bird(int pXpos, int pYpos, int dxParameter, int dyParameter, Image picParameter) {
 
         xpos = pXpos;
         ypos = pYpos;
-        width = 100;
-        height = 100;
+        width = 60;
+        height = 55;
         dx = dxParameter;
         dy = dyParameter;
         pic = picParameter;
@@ -69,6 +70,9 @@ public class Bird {
             ypos = 0;
         }
 
+        if(jumping==true){
+           dy=dy+2;
+        }
 
         //always put this after you've done all the changing of the xpos and ypos values
         rec = new Rectangle(xpos, ypos, width, height);
@@ -100,6 +104,13 @@ public class Bird {
         }
     }
 
+    public void pause(int time) {
+        //sleep
+        try {
+            Thread.sleep(time);
+        } catch (InterruptedException e) {
 
+        }
+    }
 
 }

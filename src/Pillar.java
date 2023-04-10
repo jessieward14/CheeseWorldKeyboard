@@ -37,8 +37,8 @@ public class Pillar {
 
         xpos = pXpos;
         ypos = pYpos;
-        width = 10;
-        height = 50;
+        width = 70;
+        height = 201;
         dx = dxParameter;
         dy = dyParameter;
       //  pic = picParameter;
@@ -56,9 +56,9 @@ public class Pillar {
         ypos = ypos + dy;
 
 
-        if (xpos <-1000) {
-            xpos = 1000;
-        }
+//        if (xpos <-1000) {
+//            xpos = 1000;
+//        }
 
         rec = new Rectangle(xpos, ypos, width, height);
 
